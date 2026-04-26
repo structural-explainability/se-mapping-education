@@ -1,0 +1,71 @@
+# ============================================================
+# SE_MANIFEST.toml (Repository Declaration)
+# ============================================================
+
+schema = "se-manifest-2"
+
+# === Identity ===
+
+[meta]
+name = "se-mapping-education"
+org = "structural-explainability"
+status = "active"
+version = "0.1.0"
+
+[repo]
+class = "mapping"
+summary = "Education-domain conformance examples for Structural Explainability mapping rules."
+
+# === Structural contract ===
+
+[depends]
+required = [
+  "se-constitution",
+  "se-kernel",
+  "se-mapspec",
+]
+optional = [
+  "se-mapping-education-math",
+  "se-mapping-education-math-g8",
+]
+
+[provides]
+artifacts = [
+  "education-domain-boundary",
+  "education-mapping-scope",
+  "education-example-index",
+]
+
+[scope]
+includes = [
+  "definition of education-domain mapping boundary",
+  "definition of education mapping scope",
+  "index of bounded education conformance examples",
+]
+
+excludes = [
+  "source registries",
+  "dashboards",
+  "analytics applications",
+  "policy interpretation",
+  "claims about educational quality",
+]
+
+[validation]
+entrypoint = "none"
+
+# === Behavior / governance ===
+
+[naming]
+pattern = "se-mapping-{standard}"
+
+[governance]
+authority = "structural-explainability"
+
+# === External references ===
+
+[citation]
+cff = "CITATION.cff"
+
+[traceability]
+identifier_map = "none"

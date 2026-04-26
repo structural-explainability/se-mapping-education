@@ -1,0 +1,49 @@
+# ============================================================
+# CITATION.cff (How to cite this project)
+# ============================================================
+
+# REQ.UNIVERSAL: Professional open projects SHOULD include this file.
+# USAGE: See https://citation-file-format.github.io/ for details.
+
+cff-version: "1.2.0"
+type: software
+
+title: "Structural Explainability Mapping: Education"
+version: "0.1.0"
+date-released: "2026-04-26"
+
+authors:
+  - family-names: Case
+    given-names: Denise M.
+    orcid: "https://orcid.org/0000-0001-6165-7389"
+    affiliation: "Northwest Missouri State University, School of Computer Science and Information Systems, Maryville, MO, USA"
+
+repository-code: "https://github.com/structural-explainability/se-mapping-education"
+url: "https://github.com/structural-explainability/se-mapping-education"
+
+license: MIT
+
+abstract: >
+  Bounded education-domain conformance examples for Structural Explainability
+  mapping rules.
+
+keywords:
+  # identity
+  - structural-explainability
+  - education-standards
+  - standards-mapping
+  - conformance-example
+  - cross-system-alignment
+
+  # practices
+  - cross-system-mapping
+  - declarative-mapping
+  - schema-validation
+  - reproducible-artifacts
+
+  # ecosystem
+  - python
+  - open-data
+  - open-source
+
+message: "If you use this work, please cite it using the metadata in this file."
