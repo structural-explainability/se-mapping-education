@@ -42,7 +42,7 @@ systems and do not constitute full source registries.
 
 - mapping schema checks
 - relation checks
-- context checks
+- context checks (not yet implemented)
 
 ## Does Not Include
 
@@ -94,8 +94,21 @@ uvx pre-commit run --all-files
 git add -A
 uvx pre-commit run --all-files
 
+# run
+uv run python -m se_mapping_education sort
+uv run python -m se_mapping_education validate
+uv run python -m se_mapping_education matrix
+
+# child repos use the same commands with their own module name
+# uv run python -m se_mapping_education_math validate
+# uv run python -m se_mapping_education_math_g8 validate
+
 # do chores
 npx markdownlint-cli "**/*.md" --fix
+uv run python -m ruff format .
+uv run python -m ruff check . --fix
+uv run python -m pyright
+uv run python -m pytest
 uv run python -m zensical build
 
 # save progress

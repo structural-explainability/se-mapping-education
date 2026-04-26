@@ -1,8 +1,11 @@
 # ============================================================
 # .github/workflows/ci-python-zensical.yml (Continuous Integration)
 # ============================================================
-# Updated: 2026-04-26
+# Updated: 2026-04-22
 #
+# WHY-FILE: Validate repository hygiene, Python correctness, and documentation builds.
+# REQ: CI MUST NOT introduce arbitrary rules that are not reproducible locally.
+# OBS: CI validates only; it does not edit files or deploy docs.
 # OBS: yamllint config lives at .github/yamllint.yml (not repo root).
 #
 # === COVERAGE ===
@@ -75,7 +78,7 @@ jobs:
           if [ -f "zensical.toml" ]; then
             uv run python -m zensical --version
           fi
-        # WHY: Version output makes CI logs easier to debug when tools change.
+        # WHY: Version output helps debug when tools change.
 
       - name: A6) Run pre-commit on all files
         run: uv tool run pre-commit run --all-files
