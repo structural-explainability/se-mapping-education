@@ -5,8 +5,8 @@ applying Structural Explainability mapping rules.
 
 ## Artifacts
 
-- [Scope](./scope/)
-- [Validation](./validation/)
+- [Scope](./scope.md)
+- [Validation](./validation.md)
 
 ## Implementations
 
