@@ -4,7 +4,12 @@
 from pathlib import Path
 from unittest.mock import patch
 
-import se_mapping_education.validate
+from se_mapping_education.validate import (
+    run_validate,
+    validate_acu_order,
+    validate_alignment,
+    validate_all,
+)
 
 VALID_ALIGNMENT = {
     "source_id": "NAEP.Math.G8.Statistics.DescribeData",
@@ -26,49 +31,37 @@ def _write_toml(path: Path, content: str) -> Path:
 
 def test_source_id_not_string():
     alignment = {**VALID_ALIGNMENT, "source_id": 42}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("source_id" in e and "string" in e for e in errors)
 
 
 def test_target_id_not_string():
     alignment = {**VALID_ALIGNMENT, "target_id": 99}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("target_id" in e and "string" in e for e in errors)
 
 
 def test_empty_target_id():
     alignment = {**VALID_ALIGNMENT, "target_id": "  "}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("target_id" in e for e in errors)
 
 
 def test_relation_not_string():
     alignment = {**VALID_ALIGNMENT, "relation": 0}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("relation" in e and "string" in e for e in errors)
 
 
 def test_confidence_not_numeric():
     alignment = {**VALID_ALIGNMENT, "confidence": "high"}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("confidence" in e and "numeric" in e for e in errors)
 
 
 def test_method_not_string():
     alignment = {**VALID_ALIGNMENT, "method": True}
-    errors = se_mapping_education.validate.validate_alignment(
-        Path("t.toml"), 1, alignment
-    )
+    errors = validate_alignment(Path("t.toml"), 1, alignment)
     assert any("method" in e and "string" in e for e in errors)
 
 
@@ -90,7 +83,7 @@ id = "acu.beta"
 
     with f.open("rb") as fh:
         data = tomllib.load(fh)
-    errors = se_mapping_education.validate.validate_acu_order(f, data)
+    errors = validate_acu_order(f, data)
     assert errors == []
 
 
@@ -109,7 +102,7 @@ id = "acu.a"
 
     with f.open("rb") as fh:
         data = tomllib.load(fh)
-    errors = se_mapping_education.validate.validate_acu_order(f, data)
+    errors = validate_acu_order(f, data)
     assert any("sorted" in e for e in errors)
 
 
@@ -128,7 +121,7 @@ id = "acu.a"
 
     with f.open("rb") as fh:
         data = tomllib.load(fh)
-    errors = se_mapping_education.validate.validate_acu_order(f, data)
+    errors = validate_acu_order(f, data)
     assert any("duplicate" in e for e in errors)
 
 
@@ -138,7 +131,7 @@ def test_acu_order_no_acu_key(tmp_path: Path):
 
     with f.open("rb") as fh:
         data = tomllib.load(fh)
-    errors = se_mapping_education.validate.validate_acu_order(f, data)
+    errors = validate_acu_order(f, data)
     assert errors == []
 
 
@@ -146,18 +139,20 @@ def test_acu_order_no_acu_key(tmp_path: Path):
 
 
 def test_validate_all_missing_directory():
-    errors = se_mapping_education.validate.validate_all(Path("/nonexistent/path"))
-    assert any("does not exist" in e for e in errors)
+    errors = validate_all(Path("/nonexistent/path"))
+    assert any("does not exist" in e or "no mappings" in e for e in errors)
 
 
 def test_validate_all_empty_directory(tmp_path: Path):
-    errors = se_mapping_education.validate.validate_all(tmp_path)
-    assert any("no TOML" in e for e in errors)
+    errors = validate_all(tmp_path)
+    assert any("no mappings" in e for e in errors)
 
 
 def test_validate_all_valid_file(tmp_path: Path):
+    mappings = tmp_path / "data" / "mappings"
+    mappings.mkdir(parents=True)
     _write_toml(
-        tmp_path / "good.toml",
+        mappings / "good.toml",
         """
 [[alignment]]
 source_id = "NAEP.Math.G8.Algebra.Alg4"
@@ -168,13 +163,13 @@ method = "expert_review"
 human_validated = false
 """,
     )
-    errors = se_mapping_education.validate.validate_all(tmp_path)
+    errors = validate_all(tmp_path)
     assert errors == []
 
 
 def test_validate_all_invalid_file_included(tmp_path: Path):
     _write_toml(tmp_path / "bad.toml", '[mapping]\nid = "x"\n')
-    errors = se_mapping_education.validate.validate_all(tmp_path)
+    errors = validate_all(tmp_path)
     assert len(errors) > 0
 
 
@@ -182,8 +177,10 @@ def test_validate_all_invalid_file_included(tmp_path: Path):
 
 
 def test_run_validate_passes(tmp_path: Path):
+    mappings = tmp_path / "data" / "mappings"
+    mappings.mkdir(parents=True)
     _write_toml(
-        tmp_path / "good.toml",
+        mappings / "good.toml",
         """
 [[alignment]]
 source_id = "NAEP.Math.G8.Algebra.Alg4"
@@ -194,6 +191,6 @@ method = "expert_review"
 human_validated = false
 """,
     )
-    with patch("se_mapping_education.validate.MAPPINGS_DIR", tmp_path):
-        result = se_mapping_education.validate.run_validate()
+    with patch("se_mapping_education.validate.PROJECT_ROOT", tmp_path):
+        result = run_validate()
     assert result == 0
