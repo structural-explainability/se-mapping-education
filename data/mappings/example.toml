@@ -1,0 +1,5 @@
+[[alignment]]
+source_id = "example.source"
+target_id = "example.target"
+relation = "equivalent"
+confidence = 1.0
