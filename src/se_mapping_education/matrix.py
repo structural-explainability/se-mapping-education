@@ -130,12 +130,12 @@ def render_markdown(matrix: dict[str, dict[str, str]]) -> str:
     lines = [
         "# Coverage Matrix",
         "",
-        "This matrix is a draft structural coverage artifact. "
-        "It shows declared mapping relations between source systems and NOR targets. "
+        "This matrix is a draft structural coverage artifact.\n"
+        "It shows declared mapping relations between source systems and NOR targets.\n"
         "It does not evaluate curriculum quality, instructional effectiveness, or student performance.",
         "",
         "| NOR Target | " + " | ".join(source_systems) + " |",
-        "|---|" + "|".join("---" for _ in source_systems) + "|",
+        "| --- |" + "|".join(" --- " for _ in source_systems) + "|",
     ]
 
     for target_id, coverage in sorted(matrix.items()):
