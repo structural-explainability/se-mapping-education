@@ -4,10 +4,10 @@
 
 schema = "se-manifest-2"
 
-# === Identity ===
+# === Repository Identity ===
 
 [meta]
-name = "se-mapping-education"
+name = { repo = "se-mapping-education", kind = "semantic", version = "main" }
 org = "structural-explainability"
 status = "active"
 version = "0.1.0"
@@ -16,18 +16,20 @@ version = "0.1.0"
 class = "mapping"
 summary = "Education-domain conformance examples for Structural Explainability mapping rules."
 
-# === Structural contract ===
+# === Dependency Declarations ===
 
 [depends]
 required = [
-  "se-constitution",
-  "se-kernel",
-  "se-mapspec",
+  { repo = "se-constitution", kind = "semantic", version = "main" },
+  { repo = { repo = "se-kernel", kind = "semantic", version = "main" }, kind = "semantic", version = "main" },
+  { repo = { repo = "se-mapspec", kind = "semantic", version = "main" }, kind = "semantic", version = "main" },
 ]
 optional = [
-  "se-mapping-education-math",
-  "se-mapping-education-math-g8",
+  { repo = { repo = "se-mapping-education-math", kind = "semantic", version = "main" }, kind = "semantic", version = "main" },
+  { repo = { repo = "se-mapping-education-math-g8", kind = "semantic", version = "main" }, kind = "semantic", version = "main" },
 ]
+
+# === Provided Artifacts ===
 
 [provides]
 artifacts = [
@@ -35,6 +37,8 @@ artifacts = [
   "education-mapping-scope",
   "education-example-index",
 ]
+
+# === Scope ===
 
 [scope]
 includes = [

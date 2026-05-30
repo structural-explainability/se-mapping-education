@@ -32,7 +32,7 @@ dev = [
 
 docs = [
     # REQ.DOCS.DEPS: External packages used to generate project documentation.
-    "zensical",
+    "zensical==0.0.37", # WHY: Link resolution fails with newer versions; pinning to a known working version.,
 ]
 
 # ============================================================
@@ -52,7 +52,10 @@ reportMissingTypeStubs = "none" # WHY: Avoid warnings from third-party libraries
 reportMissingImports = "warning" # WHY: Warn about missing imports to catch potential issues, but allow flexibility in notebooks and dynamic code.
 reportPrivateUsage = "none" # WHY: Allow usage of private members (e.g., _version.py) without warnings, as this is common in Python projects.
 typeCheckingMode = "strict" # strict | basic | off
-useLibraryCodeForTypes = false # WHY: Avoid type checking third-party library code to reduce noise and improve performance.
+
+[[tool.pyright.executionEnvironments]]
+root = "tests"
+typeCheckingMode = "basic" # strict | basic | off
 
 # === PYTEST (VERIFY LOGIC) ===
 
